@@ -54,6 +54,7 @@ public:
     std::string getAirportCodeByName(const std::string& airportName);
     std::vector<std::vector<Flight*>> findBestFlightsBetweenCities(const std::string& sourceCity, const std::string& targetCity);
     std::vector<std::string> getAirportsInCity(const std::string& cityName);
+    void findFlightRoutesAirportToAirportnoprint(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines);
 
 
 

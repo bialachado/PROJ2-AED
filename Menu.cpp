@@ -319,22 +319,23 @@ void Menu::processChoice3(int choice) {
             break;
         }
         case 2: {
-            cout << endl;
-            string sourcecountry;
-            string targetcountry;
+            string line;
+            getline(cin, line);
             cout << "Enter source country name: ";
-            cin >> sourcecountry;
+            string sourcecountry;
+            getline(cin,sourcecountry);
             cout << endl;
-            string sourcecity;
             cout << "Enter source city name: ";
-            cin >> sourcecity;
+            string sourcecity;
+            getline(cin,sourcecity);
             cout << endl;
             cout << "Enter target country name: ";
-            cin >> targetcountry;
+            string targetcountry;
+            getline(cin,targetcountry);
             cout << endl;
-            string targetcity;
             cout << "Enter target city name: ";
-            cin >> targetcity;
+            string targetcity;
+            getline(cin,targetcity);
             cout << endl;
             string answer;
             vector<string> airlines;
