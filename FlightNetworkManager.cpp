@@ -355,6 +355,18 @@ void FlightNetworkManager::ReachableDestinations(string code){
 /////////////////////////////////////////////3.6\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 //conta voos
 void FlightNetworkManager::CountFlightsWithStopsFromAirport(std::string code, int stops) {
+    auto search = node_keys.find(code)->second;
+    if (stops == 2) {
+        cout << "Numero de voos com 1 escala: " << flightsGraph.countAirports(code, search, stops) << endl;
+    } else {
+        cout << "Numero de voos com " << stops - 1 << " escalas: " << flightsGraph.countAirports(code, search, stops)
+             << endl;
+    }
+}
+
+
+
+/*
     auto searchIt = node_keys.find(code);
     if (searchIt != node_keys.end()) {
         int airportIndex = searchIt->second;
@@ -370,6 +382,7 @@ void FlightNetworkManager::CountFlightsWithStopsFromAirport(std::string code, in
     }
 }
 
+ */
 //conta cidade
 void FlightNetworkManager::CountReachableCitiesFromAirport(const std::string& airportCode, int maxStops) {
     auto searchIt = node_keys.find(airportCode);

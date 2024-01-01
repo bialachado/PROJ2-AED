@@ -203,10 +203,10 @@ void Menu::processChoice2(int choice) {
             int maxStops;
             cout << "Enter the maximum number of stops: ";
             cin >> maxStops;
-            manager.CountFlightsWithStopsFromAirport(airportCode, maxStops);
-            manager.CountReachableCitiesFromAirport(airportCode, maxStops);
-            manager.CountReachableAirportsFromAirport(airportCode, maxStops);
-            manager.CountReachableCountriesFromAirport(airportCode, maxStops);
+            manager.CountFlightsWithStopsFromAirport(airportCode, maxStops+1);
+            manager.CountReachableCitiesFromAirport(airportCode, maxStops+1);
+            manager.CountReachableAirportsFromAirport(airportCode, maxStops+1);
+            manager.CountReachableCountriesFromAirport(airportCode, maxStops+1);
             displayMenu2();
             break;
         }
