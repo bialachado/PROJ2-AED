@@ -653,7 +653,7 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
     int con1 = (*search).second;
     int con2 = (*search2).second;
     if (!isConnected(con1, con2)) {
-        cout << "Nao e possivel fazer este voo\n";
+        cout << "It is not possible to make this flight\n";
         return;
     }
     list<Flight*> found = flightsGraph.bfsGetList((*search).second, sourceAirportCode, targetAirportCode);
@@ -667,7 +667,7 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
 
     if (found.empty()) {
         list<vector<Flight*>> scales;
-        cout << "\nVoos com escala:\n";
+        cout << "\nFlight with stopovers:\n";
         auto found2 = copy;
         for (Flight* f : copy) {
             auto it2 = found2.begin();
@@ -696,9 +696,9 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
                     if (count == v.size()) {
                         vector<Flight*> copy = v;
                         for (auto f : copy) {
-                            cout << f->getSource() << " -> " << f->getTarget() << " || " << "Companhia Aerea: " << f->getAirline() << "\n";
+                            cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << "\n";
                         }
-                        cout << " Distancia total = " << ScaleDistance(v) << " km\n\n";
+                        cout << " Total distance = " << ScaleDistance(v) << " km\n\n";
                     }
                 }
             }
@@ -706,19 +706,19 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
         }
         for (const auto& v : scales) {
             for (auto f : v) {
-                cout << f->getSource() << " -> " << f->getTarget() << " || " << "Companhia Aerea: " << f->getAirline() << "\n";
+                cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << "\n";
             }
-            cout << "Distancia total = " << ScaleDistance(v) << " km\n\n";
+            cout << "Total distance = " << ScaleDistance(v) << " km\n\n";
         }
     } else {
-        cout << "\nVoos diretos:\n";
+        cout << "\nDirect flights:\n";
         if (!airlines.empty()) {
             for (Flight* f : found) {
                 if (f->getSource() == sourceAirportCode){
                     for (const auto& a : airlines) {
                         if (a == f->getAirline() ) {
-                            cout << f->getSource() << " -> " << f->getTarget() << " || " << "Companhia Aerea: " << f->getAirline() << endl;
-                            cout << "Distancia = " << distanciaAeroportos(f->getSource(), f->getTarget()) << " km\n";
+                            cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << endl;
+                            cout << "Distance = " << distanciaAeroportos(f->getSource(), f->getTarget()) << " km\n";
                         }
                     }
                 }
@@ -726,8 +726,8 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
         } else {
             for (Flight* f : found) {
                 if (f->getSource() == sourceAirportCode) {
-                    cout << f->getSource() << " -> " << f->getTarget() << " || " << "Companhia Aerea: " << f->getAirline() << endl;
-                    cout <<  "Distancia = " << distanciaAeroportos(f->getSource(), f->getTarget()) << " km\n";
+                    cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << endl;
+                    cout <<  "Distance = " << distanciaAeroportos(f->getSource(), f->getTarget()) << " km\n";
                 }
             }
         }

@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "PROJ2::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-PROJ2-Debug-26911a91a9dd15a9dda4.json",
+					"jsonFile" : "target-PROJ2-Debug-e84f5598229e36360069.json",
 					"name" : "PROJ2",
 					"projectIndex" : 0
 				}
@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/franciscafernandes/Documents/GitHub/PROJ2-AED/cmake-build-debug",
-		"source" : "/Users/franciscafernandes/Documents/GitHub/PROJ2-AED"
+		"build" : "/Users/beatrizpereira/Documents/GitHub/PROJ2-AED/cmake-build-debug",
+		"source" : "/Users/beatrizpereira/Documents/GitHub/PROJ2-AED"
 	},
 	"version" : 
 	{

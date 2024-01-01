@@ -16,6 +16,7 @@ public:
     void displayMenu3();
     void processChoice1(int choice);
     void processChoice2(int choice);
+    void processChoice3(int choice);
 
 private:
     FlightNetworkManager& manager;
