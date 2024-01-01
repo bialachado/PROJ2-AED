@@ -107,7 +107,7 @@ void FlightNetworkManager::readFlights() {
 }
 
 
-/*
+
 // Função para contar países para os quais um aeroporto viaja - 3.4
 int FlightNetworkManager::countCountriesByAirport(const std::string& airportCode) {
     std::set<std::string> countries;
@@ -119,7 +119,6 @@ int FlightNetworkManager::countCountriesByAirport(const std::string& airportCode
     }
     return countries.size();
 }
- */
 
 /*||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 /////////////////////////////////////////////FUNÇÕES PONTO 3\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -263,6 +262,37 @@ void FlightNetworkManager::DisplayAirlinesOperatingFromAirport(string airportCod
         return; // Ou outra lógica apropriada
     }
 }
+
+void FlightNetworkManager::DisplayCityDestinationCountries(const std::string& cityName) {
+    std::vector<std::string> airportsInCity = getAirportsInCity(cityName);
+    int numCountries = 0;
+    for (const auto& airport : airportsInCity) {
+        auto searchIt = node_keys.find(airport);
+        if (searchIt != node_keys.end()) {
+            int search = searchIt->second;
+            for (auto x: flightsGraph.CountDistinctDestinationCountries(airport, search).second) {
+                numCountries++;
+            }
+        }
+    }
+    std::cout << "Total number of different countries the city " << cityName << " travels to directly: " << numCountries << std::endl;
+    cout << "The city travels to the following countries directly: ";
+    for (const auto& airport : airportsInCity) {
+        auto searchIt = node_keys.find(airport);
+        if (searchIt != node_keys.end()) {
+            int search = searchIt->second;
+            for (auto x: flightsGraph.CountDistinctDestinationCountries(airport, search).second) {
+                if (x == flightsGraph.CountDistinctDestinationCountries(airport, search).second.back()) {
+                    cout << x;
+                } else {
+                    cout << x << ", ";
+                }
+            }
+        }
+        cout << endl;
+    }
+}
+
 
 /////////////////////////////////////////////3.5\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 

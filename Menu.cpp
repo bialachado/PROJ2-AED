@@ -55,6 +55,7 @@ void Menu::processChoice1(int choice) {
             cout << "\nInvalid option. Try again\n";
             std::cout << "\033[0;31m";
             displayMainMenu();
+            break;
     }
 }
 
@@ -182,6 +183,10 @@ void Menu::processChoice2(int choice) {
             manager.DisplayAirportDestinationCountries(airportCode);
             manager.DisplayAirlinesOperatingFromAirport(airportCode);
             cout << endl;
+            string city;
+            cout << "Enter the city name: ";
+            cin >> city;
+            manager.DisplayCityDestinationCountries(city);
             displayMenu2();
             break;
         }
@@ -227,13 +232,14 @@ void Menu::processChoice2(int choice) {
         }
         case 10: {
             displayMainMenu();
+            break;
         }
         default:
             std::cout << "\033[1;31m";
             cout << "\nInvalid option. Try again\n";
             std::cout << "\033[0;31m";
             displayMenu2();
-
+            break;
         }
 }
 
@@ -403,12 +409,13 @@ void Menu::processChoice3(int choice) {
         }
         case 4: {
             displayMainMenu();
+            break;
         }
         default:
             std::cout << "\033[1;31m";
             cout << "\nInvalid option. Try again\n";
             std::cout << "\033[0;31m";
             displayMenu2();
-
+            break;
     }
 }

@@ -44,6 +44,7 @@ public:
     unordered_map<string, int> node_keys; //novo
     void CountReachableCountriesFromAirport(const std::string& airportCode, int maxStops);
     void CountReachableAirportsFromAirport(const std::string& airportCode, int maxStops);
+    void DisplayCityDestinationCountries(const std::string& city);
     void DisplayNumberOfArticulationPoints();
     void DisplayArticulationAirports();
     void DisplayTopKAirports(int k);
