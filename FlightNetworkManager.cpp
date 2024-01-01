@@ -155,28 +155,40 @@ void FlightNetworkManager::DirectFlightsCountFromAirport(std::string& code) {
 void FlightNetworkManager::getFlightsByAirline(const string& airlineCode) const {
     unordered_set<string> uniqueAirports;
     int nVoos = 0;
+    bool airlineFound = false;
+
+    if (airlineMap.find(airlineCode) == airlineMap.end()) {
+        cout << "Error: Airline with code '" << airlineCode << "' not found." << endl;
+        return;
+    }
 
     for (const auto& flight : flightsVec) {
         if (flight->getAirline() == airlineCode) {
             nVoos++;
             uniqueAirports.insert(flight->getSource());
+            airlineFound = true;
         }
     }
 
-    cout << "Number of Flights: " << nVoos << endl;
-    cout << "Number of Airports: " << uniqueAirports.size() << endl;
-    cout << "Airports List: " << endl;
-    cout << "Airport Name -> City, Country" << endl;
+    if (airlineFound) {
+        cout << "Number of Flights: " << nVoos << endl;
+        cout << "Number of Airports: " << uniqueAirports.size() << endl;
+        cout << "Airports List: " << endl;
+        cout << "Airport Name -> City, Country" << endl;
 
-    for (const auto& airportCode : uniqueAirports) {
-        auto airportIt = airportMap.find(airportCode);
-        if (airportIt != airportMap.end()) {
-            auto airport = airportIt->second;
-            cout << airport->getName() << " -> " << airport->getCity() << ", " << airport->getCountry() << endl;
+        for (const auto& airportCode : uniqueAirports) {
+            auto airportIt = airportMap.find(airportCode);
+            if (airportIt != airportMap.end()) {
+                auto airport = airportIt->second;
+                cout << airport->getName() << " -> " << airport->getCity() << ", " << airport->getCountry() << endl;
+            }
         }
+        cout << endl;
+    } else {
+        cout << "No flights found for airline with code '" << airlineCode << "'." << endl;
     }
-    cout << endl;
 }
+
 
 // Número de voos que saem/chegam a uma cidade, aeroportos na cidade
 void FlightNetworkManager::getFlightsByCity(const string& cityName) const {
@@ -185,20 +197,27 @@ void FlightNetworkManager::getFlightsByCity(const string& cityName) const {
     int nVoos = 0;
     int nVoosChegada = 0;
 
+    bool cityFound = false;
 
     for (const auto& flight : flightsVec) {
         auto airportIt = airportMap.find(flight->getSource());
         if (airportIt != airportMap.end() && airportIt->second->getCity() == cityName) {
             nVoos++;
             uniqueAirports.insert(flight->getSource());
+            cityFound = true;
         }
 
-        // Conta os voos de chegada à cidade
         auto arrivalAirportIt = airportMap.find(flight->getTarget());
         if (arrivalAirportIt != airportMap.end() && arrivalAirportIt->second->getCity() == cityName) {
             nVoosChegada++;
             uniqueArrivalAirports.insert(flight->getTarget());
+            cityFound = true;
         }
+    }
+
+    if (!cityFound) {
+        cout << "Error: City '" << cityName << "' not found in the data." << endl;
+        return;
     }
 
     cout << "Number of flights departing from the city " << cityName << ": " << nVoos << endl;
@@ -266,33 +285,41 @@ void FlightNetworkManager::DisplayAirlinesOperatingFromAirport(string airportCod
 void FlightNetworkManager::DisplayCityDestinationCountries(const std::string& cityName) {
     std::vector<std::string> airportsInCity = getAirportsInCity(cityName);
     int numCountries = 0;
+    bool cityFound = !airportsInCity.empty(); // Assuming getAirportsInCity returns an empty vector if city not found
+
     for (const auto& airport : airportsInCity) {
         auto searchIt = node_keys.find(airport);
         if (searchIt != node_keys.end()) {
             int search = searchIt->second;
-            for (auto x: flightsGraph.CountDistinctDestinationCountries(airport, search).second) {
+            for (auto x : flightsGraph.CountDistinctDestinationCountries(airport, search).second) {
                 numCountries++;
             }
         }
     }
+
+    if (!cityFound) {
+        std::cout << "Error: City '" << cityName << "' not found in the airport data." << std::endl;
+        return;
+    }
+
     std::cout << "Total number of different countries the city " << cityName << " travels to directly: " << numCountries << std::endl;
-    cout << "The city travels to the following countries directly: ";
+    std::cout << "The city travels to the following countries directly: ";
+
     for (const auto& airport : airportsInCity) {
         auto searchIt = node_keys.find(airport);
         if (searchIt != node_keys.end()) {
             int search = searchIt->second;
-            for (auto x: flightsGraph.CountDistinctDestinationCountries(airport, search).second) {
+            for (auto x : flightsGraph.CountDistinctDestinationCountries(airport, search).second) {
                 if (x == flightsGraph.CountDistinctDestinationCountries(airport, search).second.back()) {
-                    cout << x;
+                    std::cout << x;
                 } else {
-                    cout << x << ", ";
+                    std::cout << x << ", ";
                 }
             }
         }
-        cout << endl;
+        std::cout << std::endl;
     }
 }
-
 
 /////////////////////////////////////////////3.5\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -432,19 +459,58 @@ void FlightNetworkManager::DisplayArticulationAirports() {
 //sabendo código dos aeroportos retorna os voos diretos (melhores voos)
 std::vector<Flight*> FlightNetworkManager::findDirectFlights(const std::string& sourceCode, const std::string& targetCode) {
     std::vector<Flight*> directFlights;
+    bool sourceFound = false, targetFound = false;
+
     for (const auto& flight : flightsVec) {
         if (flight->getSource() == sourceCode && flight->getTarget() == targetCode) {
             directFlights.push_back(flight);
+            sourceFound = true;
+            targetFound = true;
+        } else if (flight->getSource() == sourceCode) {
+            sourceFound = true;
+        } else if (flight->getTarget() == targetCode) {
+            targetFound = true;
         }
     }
+
+    if (!sourceFound) {
+        std::cerr << "Error: Source airport code '" << sourceCode << "' not found in the available flights." << std::endl;
+    }
+
+    if (!targetFound) {
+        std::cerr << "Error: Target airport code '" << targetCode << "' not found in the available flights." << std::endl;
+    }
+
     return directFlights;
 }
+
 
 //sabendo código dos aeroportos retorna os voos com menos paragens  (melhores voos)
 std::vector<std::vector<Flight*>> FlightNetworkManager::findFlightsWithMinStops(const std::string& sourceCode, const std::string& targetCode) {
     std::unordered_map<std::string, std::vector<std::vector<Flight*>>> paths;
     std::queue<std::pair<std::string, std::vector<Flight*>>> q;
     std::unordered_map<std::string, int> minStops;
+
+    bool sourceFound = false, targetFound = false;
+
+    for (const auto& flight : flightsVec) {
+        if (flight->getSource() == sourceCode) {
+            sourceFound = true;
+        }
+        if (flight->getTarget() == targetCode) {
+            targetFound = true;
+        }
+    }
+
+    if (!sourceFound) {
+        std::cerr << "Error: Source airport code '" << sourceCode << "' not found in the available flights." << std::endl;
+        return {};
+    }
+
+    if (!targetFound) {
+        std::cerr << "Error: Target airport code '" << targetCode << "' not found in the available flights." << std::endl;
+        return {};
+    }
 
     q.push({sourceCode, {}});
 
@@ -475,6 +541,7 @@ std::vector<std::vector<Flight*>> FlightNetworkManager::findFlightsWithMinStops(
 
     return paths[targetCode];
 }
+
 
 //função "final" para o 4.1
 void FlightNetworkManager::findBestFlightsAirCode(const std::string& sourceCode, const std::string& targetCode) {
@@ -680,7 +747,15 @@ FlightNetworkManager::findBestFlightOptions(double srcLat, double srcLong, doubl
 //substituto -- usar este para codigo do aeroporto
 void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines) {
     auto search = node_keys.find(sourceAirportCode);
+    if (search == node_keys.end()) {
+        std::cerr << "Error: Source airport code '" << sourceAirportCode << "' not found." << std::endl;
+        return;
+    }
     auto search2 = node_keys.find(targetAirportCode);
+    if (search2 == node_keys.end()) {
+        std::cerr << "Error: Target airport code '" << targetAirportCode << "' not found." << std::endl;
+        return;
+    }
     int con1 = (*search).second;
     int con2 = (*search2).second;
     if (!isConnected(con1, con2)) {
@@ -769,6 +844,14 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
 void FlightNetworkManager::findFlightRoutesAirportToAirportnoprint(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines) {
     auto search = node_keys.find(sourceAirportCode);
     auto search2 = node_keys.find(targetAirportCode);
+    if (search == node_keys.end()) {
+        std::cerr << "Error: Source airport code '" << sourceAirportCode << "' not found." << std::endl;
+        return;
+    }
+    if (search2 == node_keys.end()) {
+        std::cerr << "Error: Target airport code '" << targetAirportCode << "' not found." << std::endl;
+        return;
+    }
     int con1 = (*search).second;
     int con2 = (*search2).second;
     if (!isConnected(con1, con2)) {
@@ -851,39 +934,49 @@ void FlightNetworkManager::findFlightRoutesAirportToAirportnoprint(const std::st
         }
     }
 }
-/*testar com algo do tipo
- * cout << "Indique o codigo do aeroporto de partida: ";
-    string codigoSource, codigoDest, companhiaAerea;
-    cin >> codigoSource;
-    cout << endl;
-    cout << "Indique o codigo do aeroporto de chegada: ";
-    cin >> codigoDest;
-    cout << endl;
-    cout << "Indique as companhias aereas (Digite '.' para parar de escrever companhias aereas ou caso não tenha preferência))\n";
-    while (true) {
-        cin >> companhiaAerea;
-        if (companhiaAerea == "q") break;
-        v.push_back(companhiaAerea);
-    }
-    manager.findFlightRoutesAirportToAirport(codigoSource, codigoDest, v);
-
-    return 0;
-    */
-
-
-
-
-
 
 //substituto para pesquisa cidade -- Usar este
-void FlightNetworkManager::findFlightRoutesCityToCity(std::string sourceCountry, std::string sourceCity, std::string targetCountry,
-                                        std::string targetCity, vector<std::string> airlinesAllowed) {
+void FlightNetworkManager::findFlightRoutesCityToCity(std::string sourceCountry, std::string sourceCity, std::string targetCountry, std::string targetCity, vector<std::string> airlinesAllowed) {
     vector<Airport*> airportsInSourceCity;
     vector<Airport*> airportsInTargetCity;
+
+    bool sourceCityFound = false;
+    bool targetCityFound = false;
+
     for (auto x : airportsVec) {
-        if (x->getCountry() == sourceCountry && x ->getCity() == sourceCity) airportsInSourceCity.push_back(x);
-        if (x->getCountry() == targetCountry && x->getCity() == targetCity) airportsInTargetCity.push_back(x);
+        if (x->getCountry() == sourceCountry && x->getCity() == sourceCity) {
+            airportsInSourceCity.push_back(x);
+            sourceCityFound = true;
+        }
     }
+
+    for (auto x : airportsVec) {
+        if (x->getCountry() == targetCountry && x->getCity() == targetCity) {
+            airportsInTargetCity.push_back(x);
+            targetCityFound = true;
+        }
+    }
+
+    if (sourceCountry.empty() || sourceCity.empty() || targetCountry.empty() || targetCity.empty()) {
+        std::cerr << "Error: Invalid input. All fields must be provided." << std::endl;
+        return;
+    }
+
+    if (!sourceCityFound) {
+        std::cerr << "Error: Airports in the source city '" << sourceCity << "' not found." << std::endl;
+        return;
+    }
+
+    if (!targetCityFound) {
+        std::cerr << "Error: Airports in the target city '" << targetCity << "' not found." << std::endl;
+        return;
+    }
+
+    if (airportsInSourceCity.empty() || airportsInTargetCity.empty()) {
+        std::cerr << "Error: No airports found in one or both of the specified countries/cities." << std::endl;
+        return;
+    }
+
     for (auto x : airportsInSourceCity) {
         for (auto z : airportsInTargetCity) {
             findFlightRoutesAirportToAirportnoprint(x->getCode(), z->getCode(), airlinesAllowed);
@@ -892,9 +985,10 @@ void FlightNetworkManager::findFlightRoutesCityToCity(std::string sourceCountry,
 }
 
 
+
+
 double FlightNetworkManager::distanciaAeroportos(const string& src, const string& dest) {
 
-    // distance between latitudes and longitudes
     double lat1, lat2, lon1, lon2;
     lat1 = airportMap.find(src)->second->getLat();
     lat2 = airportMap.find(dest)->second->getLat();
@@ -934,22 +1028,40 @@ bool FlightNetworkManager::isConnected(int a, int b) {
 }
 
 //usar este para coordenadas
-void FlightNetworkManager::findFlightRoutesCoordinates(double sourceLongitude, double sourceLatitude, double targetLongitude,
-                                         double targetLatitude, double radius, vector<std::string> airlinesAllowed) {
+void FlightNetworkManager::findFlightRoutesCoordinates(double sourceLongitude, double sourceLatitude, double targetLongitude, double targetLatitude, double radius, vector<std::string> airlinesAllowed) {
     vector<Airport*> airportsInSource;
     vector<Airport*> airportsInTarget;
 
+    bool sourceCoordsFound = false;
+    bool targetCoordsFound = false;
+
     for (auto x : airportsVec) {
-        if (distanciaAeroportoCoordinates(x, sourceLongitude, sourceLatitude, radius)) airportsInSource.push_back(x);
-        if (distanciaAeroportoCoordinates(x, targetLongitude, targetLatitude, radius)) airportsInTarget.push_back(x);
+        if (distanciaAeroportoCoordinates(x, sourceLongitude, sourceLatitude, radius)) {
+            airportsInSource.push_back(x);
+            sourceCoordsFound = true;
+        }
+        if (distanciaAeroportoCoordinates(x, targetLongitude, targetLatitude, radius)) {
+            airportsInTarget.push_back(x);
+            targetCoordsFound = true;
+        }
     }
+
+    if (!sourceCoordsFound) {
+        std::cerr << "Error: No airports found near the specified source coordinates." << std::endl;
+        return;
+    }
+
+    if (!targetCoordsFound) {
+        std::cerr << "Error: No airports found near the specified target coordinates." << std::endl;
+        return;
+    }
+
     for (auto y : airportsInSource) {
         for (auto z : airportsInTarget) {
             findFlightRoutesAirportToAirportnoprint(y->getCode(), z->getCode(), airlinesAllowed);
         }
     }
 }
-
 
 
 bool FlightNetworkManager::distanciaAeroportoCoordinates(Airport *airport, const double &longitude, const double &latitude, double x) {
