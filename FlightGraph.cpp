@@ -308,15 +308,30 @@ std::pair<int, std::vector<std::pair<std::string, std::string>>> FlightGraph::ca
     std::vector<std::pair<std::string, std::string>> airportPairs;
 
     for (int i = 1; i <= numNodes; i++) {
-        int farthestNodeIndex;
-        int distance = bfsMaxDistance(i, farthestNodeIndex);
+        std::vector<int> distance(numNodes + 1, -1);
+        std::queue<int> q;
+        q.push(i);
+        distance[i] = 0;
 
-        if (distance > diameter) {
-            diameter = distance;
-            airportPairs.clear();
-            airportPairs.emplace_back(nodes[i].nAirport->getCode(), nodes[farthestNodeIndex].nAirport->getCode());
-        } else if (distance == diameter) {
-            airportPairs.emplace_back(nodes[i].nAirport->getCode(), nodes[farthestNodeIndex].nAirport->getCode());
+        while (!q.empty()) {
+            int currentNode = q.front();
+            q.pop();
+
+            for (const auto& edge : nodes[currentNode].adj) {
+                int nextNode = edge.dest;
+                if (distance[nextNode] == -1) {
+                    q.push(nextNode);
+                    distance[nextNode] = distance[currentNode] + 1;
+
+                    if (distance[nextNode] > diameter) {
+                        diameter = distance[nextNode];
+                        airportPairs.clear();
+                    }
+                    if (distance[nextNode] == diameter) {
+                        airportPairs.emplace_back(nodes[i].nAirport->getCode(), nodes[nextNode].nAirport->getCode());
+                    }
+                }
+            }
         }
     }
 

@@ -206,6 +206,7 @@ void Menu::processChoice2(int choice) {
             break;
         }
         case 7: {
+            cout << "Calculating the diameter of the flight network...\n";
             manager.findDiameterAndCorrespondingNodes();
             displayMenu2();
             break;
