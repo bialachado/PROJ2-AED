@@ -4,7 +4,6 @@
 #include "Menu.h"
 
 void Menu::displayMainMenu() {
-    manager.readFiles();
     int choice = 0;
     while (true) {
         std::cout << "\033[1;34m";
@@ -66,7 +65,6 @@ void Menu::processChoice1(int choice) {
 }
 
 void Menu::displayMenu2() {
-    manager.readFiles();
     int choice = 0;
     while (true) {
         std::cout << "\033[1;34m";

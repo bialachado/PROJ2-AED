@@ -5,8 +5,8 @@
 
 int main() {
     FlightNetworkManager manager;
-    manager.readFiles();
     Menu menu(manager);
+    manager.readFiles();
     menu.displayMainMenu();
     return 0;
 }
