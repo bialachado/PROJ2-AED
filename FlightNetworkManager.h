@@ -31,7 +31,6 @@ private:
     FlightGraph flightsGraph;
 
 public:
-    //adições 28/12
     FlightNetworkManager();
     int countCountriesByAirport(const std::string& airportCode); //3.4
     int countCountriesByCity(const std::string& cityName); //3.4

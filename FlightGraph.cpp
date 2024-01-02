@@ -8,17 +8,6 @@
 #include <unordered_map>
 
 
-/*
-// Função auxiliar para encontrar índice do nó
-int FlightGraph::findNodeIndex(const std::string& airportCode) const {
-    auto it = airportIndexMap.find(airportCode);
-    if (it != airportIndexMap.end()) {
-        return it->second;
-    } else {
-        return -1;
-    }
-}
- */
 
 int FlightGraph::findNodeIndex(const std::string& airportCode) const {
     auto it = airportIndexMap.find(airportCode);
@@ -31,7 +20,6 @@ int FlightGraph::findNodeIndex(const std::string& airportCode) const {
 
 
 // Adiciona uma aresta (voo) ao grafo
-//NOVO
 void FlightGraph::addEdge(int src, int dest, Flight* eFlight) {
     if (src<1 || src>numNodes || dest<1 || dest>numNodes) return;
     nodes[src].adj.push_back({dest, eFlight});
@@ -131,60 +119,7 @@ pair<int, vector<string>> FlightGraph::countAirlines(string code, int v) {
 }
 
 
-//Auxiliar para 3.5
-pair<int, vector<string>> FlightGraph::countCountriesTarget(std::string code, int v) {
-    if (v < 1 || v > numNodes) {
-        return {0, vector<string>()};
-    }
 
-    for (int i = 1; i <= numNodes; i++) {
-        nodes[i].visited = false;
-    }
-
-    unordered_set<string> seenCountries;
-    queue<int> q;
-    q.push(v);
-    nodes[v].visited = true;
-
-    while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-
-        for (const auto& e : nodes[u].adj) {
-            if (e.eFlight->getSource() != code) continue;
-
-            string country = nodes[e.dest].nAirport->getCountry();
-            seenCountries.insert(country);
-
-            if (!nodes[e.dest].visited) {
-                q.push(e.dest);
-                nodes[e.dest].visited = true;
-            }
-        }
-    }
-
-    // Converter o conjunto para vector para retornar
-    vector<string> countryList(seenCountries.begin(), seenCountries.end());
-    return {seenCountries.size(), countryList};
-}
-
-
-//Auxiliar para 3.2
-int FlightGraph::countDirectFlightsFromAirport(const string& airportCode, int airportIndex) {
-    if (airportIndex < 1 || airportIndex > numNodes) {
-        return 0; // Verifica se o índice do aeroporto está dentro do intervalo válido
-    }
-
-    int directFlightsCount = 0;
-
-    for (const auto& flight : nodes[airportIndex].adj) {
-        if (flight.eFlight->getSource() == airportCode) {
-            directFlightsCount++;
-        }
-    }
-
-    return directFlightsCount;
-}
 
 
 //auxiliar para 3.2
@@ -336,34 +271,6 @@ std::pair<int, std::vector<std::pair<std::string, std::string>>> FlightGraph::ca
     }
 
     return {diameter, airportPairs};
-}
-
-//auxiliar do 3.7
-int FlightGraph::bfsMaxDistance(int startNode, int& farthestNode) {
-    std::vector<int> distance(numNodes + 1, -1);
-    std::queue<int> q;
-    q.push(startNode);
-    distance[startNode] = 0;
-    farthestNode = startNode;
-
-    while (!q.empty()) {
-        int currentNode = q.front();
-        q.pop();
-
-        for (const auto& edge : nodes[currentNode].adj) {
-            int nextNode = edge.dest;
-            if (distance[nextNode] == -1) {
-                q.push(nextNode);
-                distance[nextNode] = distance[currentNode] + 1;
-
-                if (distance[nextNode] > distance[farthestNode]) {
-                    farthestNode = nextNode;
-                }
-            }
-        }
-    }
-
-    return distance[farthestNode];
 }
 
 //auxiliar para 3.6
@@ -559,37 +466,6 @@ std::vector<std::pair<std::string, int>> FlightGraph::findTopKAirports(int k) {
     return topKAirports;
 }
 
-//auxiliar para 4.1
-
-std::vector<std::vector<Flight*>> FlightGraph::findPaths(const std::string& sourceCode, const std::string& targetCode, const std::vector<std::string>& airlines) {
-    std::vector<std::vector<Flight*>> paths;
-    std::queue<std::vector<Flight*>> q;
-    q.push({});
-
-    while (!q.empty()) {
-        auto path = q.front();
-        q.pop();
-
-        std::string currentNode = path.empty() ? sourceCode : path.back()->getTarget();
-
-        if (currentNode == targetCode) {
-            paths.push_back(path);
-            continue;
-        }
-
-        for (const auto& edge : nodes[findNodeIndex(currentNode)].adj) {
-            Flight* nextFlight = edge.eFlight;
-            if ((path.empty() || path.back()->getTarget() == nextFlight->getSource()) &&
-                (airlines.empty() || std::find(airlines.begin(), airlines.end(), nextFlight->getAirline()) != airlines.end())) {
-                std::vector<Flight*> newPath = path;
-                newPath.push_back(nextFlight);
-                q.push(newPath);
-            }
-        }
-    }
-
-    return paths;
-}
 
 bool FlightGraph::isConnected(int a, int b) {
     for (int i = 1; i <= numNodes; i++) {
@@ -600,21 +476,7 @@ bool FlightGraph::isConnected(int a, int b) {
     return nodes[b].visited;
 }
 
-/*
-bool FlightGraph::isConnected(int sourceIndex, int targetIndex) {
-    if (sourceIndex < 1 || sourceIndex > numNodes || targetIndex < 1 || targetIndex > numNodes) {
-        return false; // Check if indices are within valid range
-    }
 
-    for (int i = 1; i <= numNodes; i++) {
-        nodes[i].visited = false; // Reset visited status of all nodes
-    }
-
-    dfs(sourceIndex); // Perform DFS starting from sourceIndex
-
-    return nodes[targetIndex].visited; // If targetIndex is visited, then there's a path
-}
- */
 
 void FlightGraph::dfs(int nodeIndex) {
     nodes[nodeIndex].visited = true; // Mark current node as visited
