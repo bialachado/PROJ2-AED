@@ -389,7 +389,7 @@ void FlightNetworkManager::CountReachableCitiesFromAirport(const std::string& ai
     if (searchIt != node_keys.end()) {
         int airportIndex = searchIt->second;
         int cityCount = flightsGraph.countCitiesWithinStops(airportCode, airportIndex, maxStops);
-        std::cout << "Number of reachable cities from " << airportCode << " within " << maxStops << " stops: " << cityCount << std::endl;
+        std::cout << "Number of reachable cities from " << airportCode << " within " << maxStops - 1 << " stops: " << cityCount - 1 << std::endl;
     } else {
         std::cout << "Airport code not found: " << airportCode << std::endl;
     }
@@ -401,7 +401,7 @@ void FlightNetworkManager::CountReachableAirportsFromAirport(const std::string& 
     if (searchIt != node_keys.end()) {
         int airportIndex = searchIt->second;
         int airportCount = flightsGraph.countAirportsWithinStops(airportCode, airportIndex, maxStops);
-        std::cout << "Number of reachable airports from " << airportCode << " within " << maxStops << " stops: " << airportCount << std::endl;
+        std::cout << "Number of reachable airports from " << airportCode << " within " << maxStops - 1 << " stops: " << airportCount - 1<< std::endl;
     } else {
         std::cout << "Airport code not found: " << airportCode << std::endl;
     }
@@ -413,7 +413,7 @@ void FlightNetworkManager::CountReachableCountriesFromAirport(const std::string&
     if (searchIt != node_keys.end()) {
         int airportIndex = searchIt->second;
         int countryCount = flightsGraph.countCountriesWithinStops(airportCode, airportIndex, maxStops);
-        std::cout << "Number of reachable countries from " << airportCode << " within " << maxStops << " stops: " << countryCount << std::endl;
+        std::cout << "Number of reachable countries from " << airportCode << " within " << maxStops - 1 << " stops: " << countryCount << std::endl;
     } else {
         std::cout << "Airport code not found: " << airportCode << std::endl;
     }

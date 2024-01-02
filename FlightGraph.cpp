@@ -330,8 +330,12 @@ int FlightGraph::countCitiesWithinStops(const std::string& sourceCode, int sourc
 
 //auxiliar para 3.6
 int FlightGraph::countCountriesWithinStops(const std::string& sourceCode, int sourceIndex, int maxStops) {
+    if (sourceIndex < 1 || sourceIndex > numNodes) {
+        throw std::invalid_argument("Source index is out of bounds.");
+    }
+
     std::unordered_set<std::string> visitedCountries;
-    std::queue<std::pair<int, int>> q;
+    std::queue<std::pair<int, int>> q; // Node index and number of stops
     q.push({sourceIndex, 0});
     visitedCountries.insert(nodes[sourceIndex].nAirport->getCountry());
 
@@ -343,8 +347,8 @@ int FlightGraph::countCountriesWithinStops(const std::string& sourceCode, int so
 
         for (const auto& edge : nodes[currentNode].adj) {
             int nextNode = edge.dest;
-            std::string nextCountry = nodes[nextNode].nAirport->getCountry();
-            if (stops + 1 <= maxStops && visitedCountries.insert(nextCountry).second) {
+            if (!visitedCountries.count(nodes[nextNode].nAirport->getCountry()) && stops + 1 <= maxStops) {
+                visitedCountries.insert(nodes[nextNode].nAirport->getCountry());
                 q.push({nextNode, stops + 1});
             }
         }
