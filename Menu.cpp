@@ -255,11 +255,18 @@ void Menu::displayMenu3() {
 
         std::cout << "****** 2.";
         std::cout << "\033[0m";
-        std::cout << " By City                                                   ";
+        std::cout << " By Airport Name                                           ";
         std::cout << "\033[1;34m";
         std::cout << "******\n";
 
         std::cout << "****** 3.";
+        std::cout << "\033[0m";
+        std::cout << " By City                                                   ";
+        std::cout << "\033[1;34m";
+        std::cout << "******\n";
+
+
+        std::cout << "****** 4.";
         std::cout << "\033[0m";
         std::cout << " By Geographical Coordinates                               ";
         std::cout << "\033[1;34m";
@@ -267,14 +274,14 @@ void Menu::displayMenu3() {
 
         std::cout << "******";
         std::cout << "\033[1;32m";
-        std::cout << " 4. Back to Main Menu                                         ";
+        std::cout << " 5. Back to Main Menu                                         ";
         std::cout << "\033[0;32m";
         std::cout << "\033[1;34m";
         std::cout << "******\n";
 
         std::cout << "******";
         std::cout << "\033[1;31m";
-        std::cout << " 5. Exit                                                      ";
+        std::cout << " 6. Exit                                                      ";
         std::cout << "\033[0;31m";
         std::cout << "\033[1;34m";
         std::cout << "******\n";
@@ -284,7 +291,7 @@ void Menu::displayMenu3() {
         std::cout << "\nEnter your choice: ";
         std::cin >> choice;
 
-        if (choice == 5) { break; }
+        if (choice == 6) { break; }
         processChoice3(choice);
         break;
     }
@@ -323,7 +330,39 @@ void Menu::processChoice3(int choice) {
             displayMenu3();
             break;
         }
-        case 2: {
+        case 2: { //MUDADO
+            string line;
+            getline(cin, line);
+            cout << "Enter source airport name: ";
+            string source;
+            getline(cin,source);
+            cout << endl;
+            cout << "Enter target airport name: ";
+            string target;
+            getline(cin,target);
+            cout << endl;
+            string answer;
+            vector<string> airlines;
+            cout << "Do you want to specify airlines? (Y/N) ";
+            cin >> answer;
+            if (answer == "Y"){
+                cout << endl;
+                while (true) {
+                    string airline;
+                    cout << "Enter the desired airline(s) (if you want to stop enter 'q'): ";
+                    cin >> airline;
+                    if (airline == "q") {
+                        break;
+                    } else {
+                        airlines.push_back(airline);
+                    }
+                }
+            }
+            manager.bestFlightAirportToAirportname(source, target, airlines);
+            displayMenu3();
+            break;
+        }
+        case 3: {
             string line;
             getline(cin, line);
             cout << "Enter source country name: ";
@@ -363,7 +402,7 @@ void Menu::processChoice3(int choice) {
             displayMenu3();
             break;
         }
-        case 3: {
+        case 4: {
             cout << endl;
             double sourceLongitude;
             double targetLongitude;
@@ -402,11 +441,11 @@ void Menu::processChoice3(int choice) {
                     }
                 }
             }
-            manager.findFlightRoutesCoordinates(sourceLongitude, sourceLatitude, targetLongitude, targetLatitude, radius, airlines);
+            manager.bestFlightCoord(sourceLongitude, sourceLatitude, targetLongitude, targetLatitude, radius, airlines);
             displayMenu3();
             break;
         }
-        case 4: {
+        case 5: {
             displayMainMenu();
             break;
         }

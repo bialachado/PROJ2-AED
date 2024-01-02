@@ -1141,7 +1141,7 @@ bool FlightNetworkManager::isConnected(int i, int k) {
 }
 
 //usar este para coordenadas
-void FlightNetworkManager::findFlightRoutesCoordinates(double sourceLongitude, double sourceLatitude, double targetLongitude, double targetLatitude, double radius, vector<std::string> airlinesAllowed) {
+void FlightNetworkManager::bestFlightCoord(double sourceLongitude, double sourceLatitude, double targetLongitude, double targetLatitude, double radius, vector<std::string> airlinesAllowed) {
     bool sourceAirCoordsFound = false;
     bool targetAirCoordsFound = false;
     vector<Airport*> originAirports;
