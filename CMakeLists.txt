@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(PROJ2 main.cpp
         Airport.cpp
-        Graph.cpp
         Airline.h
         Airline.cpp
         Flight.cpp

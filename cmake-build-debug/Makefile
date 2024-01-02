@@ -249,30 +249,6 @@ FlightNetworkManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/PROJ2.dir/build.make CMakeFiles/PROJ2.dir/FlightNetworkManager.cpp.s
 .PHONY : FlightNetworkManager.cpp.s
 
-Graph.o: Graph.cpp.o
-.PHONY : Graph.o
-
-# target to build an object file
-Graph.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/PROJ2.dir/build.make CMakeFiles/PROJ2.dir/Graph.cpp.o
-.PHONY : Graph.cpp.o
-
-Graph.i: Graph.cpp.i
-.PHONY : Graph.i
-
-# target to preprocess a source file
-Graph.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/PROJ2.dir/build.make CMakeFiles/PROJ2.dir/Graph.cpp.i
-.PHONY : Graph.cpp.i
-
-Graph.s: Graph.cpp.s
-.PHONY : Graph.s
-
-# target to generate assembly for a file
-Graph.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/PROJ2.dir/build.make CMakeFiles/PROJ2.dir/Graph.cpp.s
-.PHONY : Graph.cpp.s
-
 Menu.o: Menu.cpp.o
 .PHONY : Menu.o
 
@@ -345,9 +321,6 @@ help:
 	@echo "... FlightNetworkManager.o"
 	@echo "... FlightNetworkManager.i"
 	@echo "... FlightNetworkManager.s"
-	@echo "... Graph.o"
-	@echo "... Graph.i"
-	@echo "... Graph.s"
 	@echo "... Menu.o"
 	@echo "... Menu.i"
 	@echo "... Menu.s"

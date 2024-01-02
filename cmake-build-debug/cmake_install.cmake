@@ -1,4 +1,4 @@
-# Install script for directory: /Users/franciscafernandes/Documents/GitHub/PROJ2-AED
+# Install script for directory: /Users/beatrizpereira/Documents/GitHub/PROJ2-AED
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/franciscafernandes/Documents/GitHub/PROJ2-AED/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/beatrizpereira/Documents/GitHub/PROJ2-AED/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -108,12 +108,6 @@
 		<Unit filename="/Users/beatrizpereira/Documents/GitHub/PROJ2-AED/FlightNetworkManager.h">
 			<Option target="PROJ2"/>
 		</Unit>
-		<Unit filename="/Users/beatrizpereira/Documents/GitHub/PROJ2-AED/Graph.cpp">
-			<Option target="PROJ2"/>
-		</Unit>
-		<Unit filename="/Users/beatrizpereira/Documents/GitHub/PROJ2-AED/Graph.h">
-			<Option target="PROJ2"/>
-		</Unit>
 		<Unit filename="/Users/beatrizpereira/Documents/GitHub/PROJ2-AED/Menu.cpp">
 			<Option target="PROJ2"/>
 		</Unit>
