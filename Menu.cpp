@@ -285,16 +285,29 @@ void Menu::displayMenu3() {
         std::cout << "\033[1;34m";
         std::cout << "******\n";
 
+
+        std::cout << "****** 5.";
+        std::cout << "\033[0m";
+        std::cout << " By Airport Code and Airport Name                          ";
+        std::cout << "\033[1;34m";
+        std::cout << "******\n";
+
+        std::cout << "****** 6.";
+        std::cout << "\033[0m";
+        std::cout << " By Airport Code and City Name                             ";
+        std::cout << "\033[1;34m";
+        std::cout << "******\n";
+
         std::cout << "******";
         std::cout << "\033[1;32m";
-        std::cout << " 5. Back to Main Menu                                         ";
+        std::cout << " 7. Back to Main Menu                                         ";
         std::cout << "\033[0;32m";
         std::cout << "\033[1;34m";
         std::cout << "******\n";
 
         std::cout << "******";
         std::cout << "\033[1;31m";
-        std::cout << " 6. Exit                                                      ";
+        std::cout << " 8. Exit                                                      ";
         std::cout << "\033[0;31m";
         std::cout << "\033[1;34m";
         std::cout << "******\n";
@@ -304,7 +317,7 @@ void Menu::displayMenu3() {
         std::cout << "\nEnter your choice: ";
         std::cin >> choice;
 
-        if (choice == 6) { break; }
+        if (choice == 8) { break; }
         processChoice3(choice);
         break;
     }
@@ -326,7 +339,7 @@ void Menu::processChoice3(int choice) {
             vector<string> airlines;
             cout << "Do you want to specify airlines? (Y/N) ";
             cin >> answer;
-            if (answer == "Y"){
+            if (answer == "Y") {
                 cout << endl;
                 while (true) {
                     string airline;
@@ -348,17 +361,17 @@ void Menu::processChoice3(int choice) {
             getline(cin, line);
             cout << "Enter source airport name: ";
             string source;
-            getline(cin,source);
+            getline(cin, source);
             cout << endl;
             cout << "Enter target airport name: ";
             string target;
-            getline(cin,target);
+            getline(cin, target);
             cout << endl;
             string answer;
             vector<string> airlines;
             cout << "Do you want to specify airlines? (Y/N) ";
             cin >> answer;
-            if (answer == "Y"){
+            if (answer == "Y") {
                 cout << endl;
                 while (true) {
                     string airline;
@@ -380,25 +393,25 @@ void Menu::processChoice3(int choice) {
             getline(cin, line);
             cout << "Enter source country name: ";
             string sourcecountry;
-            getline(cin,sourcecountry);
+            getline(cin, sourcecountry);
             cout << endl;
             cout << "Enter source city name: ";
             string sourcecity;
-            getline(cin,sourcecity);
+            getline(cin, sourcecity);
             cout << endl;
             cout << "Enter target country name: ";
             string targetcountry;
-            getline(cin,targetcountry);
+            getline(cin, targetcountry);
             cout << endl;
             cout << "Enter target city name: ";
             string targetcity;
-            getline(cin,targetcity);
+            getline(cin, targetcity);
             cout << endl;
             string answer;
             vector<string> airlines;
             cout << "Do you want to specify airlines? (Y/N) ";
             cin >> answer;
-            if (answer == "Y"){
+            if (answer == "Y") {
                 cout << endl;
                 while (true) {
                     string airline;
@@ -441,7 +454,7 @@ void Menu::processChoice3(int choice) {
             vector<string> airlines;
             cout << "Do you want to specify airlines? (Y/N) ";
             cin >> answer;
-            if (answer == "Y"){
+            if (answer == "Y") {
                 cout << endl;
                 while (true) {
                     string airline;
@@ -459,6 +472,165 @@ void Menu::processChoice3(int choice) {
             break;
         }
         case 5: {
+            int subOption;
+            cout << "Select an option:\n";
+            cout << "1. Search By Source Airport Code and Target Airport Name \n";
+            cout << "2. Search By Source Airport Name and Target Airport Code\n";
+            cout << "Enter your choice (1-2): ";
+            cin >> subOption;
+
+            if (subOption == 1) {
+                string source;
+                cout << "Enter source airport code: ";
+                cin >> source;
+                cout << endl;
+                string line;
+                getline(cin, line);
+                cout << "Enter target airport name: ";
+                string target;
+                getline(cin, target);
+                cout << endl;
+                string answer;
+                vector<string> airlines;
+                cout << "Do you want to specify airlines? (Y/N) ";
+                cin >> answer;
+                if (answer == "Y") {
+                    cout << endl;
+                    while (true) {
+                        string airline;
+                        cout << "Enter the desired airline(s) (if you want to stop enter 'q'): ";
+                        cin >> airline;
+                        if (airline == "q") {
+                            break;
+                        } else {
+                            airlines.push_back(airline);
+                        }
+                    }
+                }
+                manager.bestFlightAirportToAirportCodeName(source, target, airlines);
+
+
+            } else if (subOption == 2) {
+                string line;
+                getline(cin, line);
+                cout << "Enter source airport name: ";
+                string source;
+                getline(cin, source);
+                cout << endl;
+                string target;
+                cout << "Enter target airport code: ";
+                cin >> target;
+                cout << endl;
+                //cin.ignore(); // To clear the newline character left in the buffer
+                string answer;
+                vector<string> airlines;
+                cout << "Do you want to specify airlines? (Y/N) ";
+                cin >> answer;
+                if (answer == "Y") {
+                    cout << endl;
+                    while (true) {
+                        string airline;
+                        cout << "Enter the desired airline(s) (if you want to stop enter 'q'): ";
+                        cin >> airline;
+                        if (airline == "q") {
+                            break;
+                        } else {
+                            airlines.push_back(airline);
+                        }
+                    }
+                }
+                manager.bestFlightAirportToAirportNameCode(source, target, airlines);
+            } else {
+                cout << "Invalid option. Please try again.\n";
+            }
+
+            displayMenu3();
+            break;
+        }
+
+        case 6: {
+            cout << "Select an option:\n";
+            cout << "1. Search By Source Airport Code and Target City Name \n";
+            cout << "2. Search By Source City Name and Target Airport Code\n";
+            cout << "Enter your choice (1-2): ";
+            int subOptionn;
+            cin >> subOptionn;
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the newline character
+
+            if (subOptionn == 1) {
+                string source;
+                cout << "Enter source airport code: ";
+                cin >> source;
+                cout << endl;
+                string line;
+                getline(cin, line);
+                cout << "Enter target country name: ";
+                string targetcountry;
+                getline(cin,targetcountry);
+                cout << endl;
+                cout << "Enter source city name: ";
+                string targetcity;
+                getline(cin,targetcity);
+                cout << endl;
+                string answer;
+                vector<string> airlines;
+                cout << "Do you want to specify airlines? (Y/N) ";
+                cin >> answer;
+                if (answer == "Y"){
+                    cout << endl;
+                    while (true) {
+                        string airline;
+                        cout << "Enter the desired airline(s) (if you want to stop enter 'q'): ";
+                        cin >> airline;
+                        if (airline == "q") {
+                            break;
+                        } else {
+                            airlines.push_back(airline);
+                        }
+                    }
+                }
+                manager.bestFlightsCityToCitycodecity(source, targetcountry, targetcity, airlines);
+
+
+            } else if (subOptionn == 2) {
+                cout << "Enter source country name: ";
+                string sourcecountry;
+                getline(cin,sourcecountry);
+                cout << endl;
+                cout << "Enter source city name: ";
+                string sourcecity;
+                getline(cin,sourcecity);
+                cout << endl;
+                cout << "Enter target airport code: ";
+                string target;
+                cin >> target;
+                cout << endl;
+                string answer;
+                vector<string> airlines;
+                cout << "Do you want to specify airlines? (Y/N) ";
+                cin >> answer;
+                if (answer == "Y"){
+                    cout << endl;
+                    while (true) {
+                        string airline;
+                        cout << "Enter the desired airline(s) (if you want to stop enter 'q'): ";
+                        cin >> airline;
+                        if (airline == "q") {
+                            break;
+                        } else {
+                            airlines.push_back(airline);
+                        }
+                    }
+                }
+                manager.bestFlightsCityToCitycitycode(sourcecountry, sourcecity, target, airlines);
+            } else {
+                cout << "Invalid option. Please try again.\n";
+            }
+
+            displayMenu3();
+            break;
+        }
+        case 7: {
             displayMainMenu();
             break;
         }

@@ -108,6 +108,10 @@ public:
                                                            double targetLatitude, double radius, vector<std::string> airlinesAllowed);
     bool airportCordDistance(Airport *airport, const double &longi, const double &lat, double x);
     void bestFlightAirportToAirportname(const std::string& sourceAirportName, const std::string& targetAirportName, const std::vector<std::string>& airlines);
+    void bestFlightAirportToAirportNameCode(const std::string& sourceAirportName, const std::string& targetAirportCode, const std::vector<std::string>& airlines);
+    void bestFlightAirportToAirportCodeName(const std::string& sourceAirportCode, const std::string& targetAirportName, const std::vector<std::string>& airlines);
+    void bestFlightsCityToCitycodecity(string sourceAirportCode,std::string targetCountry, std::string targetCity, vector<std::string> airlinesAllowed);
+    void bestFlightsCityToCitycitycode(std::string sourceCountry, std::string sourceCity,std::string targetAirportCode, vector<std::string> airlinesAllowed);
 
 };
 
