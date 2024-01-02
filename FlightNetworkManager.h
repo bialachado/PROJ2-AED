@@ -107,7 +107,8 @@ public:
     void findFlightRoutesCoordinates(double sourceLongitude, double sourceLatitude, double targetLongitude,
                                                            double targetLatitude, double radius, vector<std::string> airlinesAllowed);
     bool airportCordDistance(Airport *airport, const double &longi, const double &lat, double x);
+    void bestFlightAirportToAirportname(const std::string& sourceAirportName, const std::string& targetAirportName, const std::vector<std::string>& airlines);
 
-    };
+};
 
 #endif //PROJ2_FLIGHTNETWORKMANAGER_H

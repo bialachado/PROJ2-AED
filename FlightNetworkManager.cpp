@@ -948,6 +948,110 @@ void FlightNetworkManager::bestFlightAirportToAirportnoprint(const std::string& 
     }
 }
 
+//Acrscentar menu
+void FlightNetworkManager::bestFlightAirportToAirportname(const std::string& sourceAirportName, const std::string& targetAirportName, const std::vector<std::string>& airlines) {
+    auto sourceAirportCode = getAirportCodeByName(sourceAirportName);
+    auto targetAirportCode = getAirportCodeByName(targetAirportName);
+
+
+    auto looksource = node_keys.find(sourceAirportCode);
+    if (looksource == node_keys.end()) {
+        std::cerr << "Error: Source airport code '" << sourceAirportCode << "' not found." << std::endl;
+        return;
+    }
+    auto looktarget = node_keys.find(targetAirportCode);
+    if (looktarget == node_keys.end()) {
+        std::cerr << "Error: Target airport code '" << targetAirportCode << "' not found." << std::endl;
+        return;
+    }
+    int con1 = (*looksource).second;
+    int con2 = (*looktarget).second;
+    if (!isConnected(con1, con2)) {
+        cout << "It is not possible to make this flight\n";
+        return;
+    }
+    list<Flight*> found = flightsGraph.bfsGetList((*looksource).second, sourceAirportCode, targetAirportCode);
+    list<Flight*> foundDupe = found;
+    auto it = found.begin();
+    while (it != found.end()) {
+        if ((*it)->getTarget() != targetAirportCode || (*it)->getSource() != sourceAirportCode) {
+            it = found.erase(it);
+        } else it++;
+    }
+
+    if (found.empty()) {
+        list<vector<Flight*>> scales;
+        cout << "\nFlight with stopovers:\n";
+        auto found2 = foundDupe;
+        for (Flight* voo : foundDupe) {
+            auto it2 = found2.begin();
+            while (it2!=found2.end()) {
+                if ((*it2)->getTarget() != targetAirportCode) it2 = found2.erase(it2);
+                else it2++;
+            }
+
+            for (Flight* voo2 : found2) {
+                vector<Flight*> v;
+                if (voo->getTarget()!=voo2->getSource() || voo->getAirline()!=voo2->getAirline()) continue;
+                v.push_back(voo);
+                v.push_back(voo2);
+                scales.push_back(v);
+            }
+        }
+        if (!airlines.empty()) {
+            for (const auto& v : scales) {
+                int counter = 0;
+                for (auto f : v) {
+                    for (const auto& airl : airlines) {
+                        if (airl == f->getAirline()) {
+                            counter++;
+                        }
+                    }
+                    if (counter == v.size()) {
+                        vector<Flight*> flightcopy = v;
+                        for (auto f : flightcopy) {
+                            cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << "\n";
+                        }
+                        cout << " Total distance = " << computeDistance(v) << " km\n\n";
+                    }
+                }
+            }
+            return;
+        }
+        for (const auto& v : scales) {
+            for (auto f : v) {
+                cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << "\n";
+            }
+            cout << "Total distance = " << computeDistance(v) << " km\n\n";
+        }
+    } else {
+        cout << "\nDirect flights:\n";
+        if (!airlines.empty()) {
+            for (Flight* f : found) {
+                if (f->getSource() == sourceAirportCode){
+                    for (const auto& a : airlines) {
+                        if (a == f->getAirline() ) {
+                            cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << endl;
+                            cout << "Distance = " << airportregDistance(f->getSource(), f->getTarget()) << " km\n";
+                        }
+                    }
+                }
+            }
+        } else {
+            for (Flight* f : found) {
+                if (f->getSource() == sourceAirportCode) {
+                    cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << endl;
+                    cout <<  "Distance = " << airportregDistance(f->getSource(), f->getTarget()) << " km\n";
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
 //substituto para pesquisa cidade -- Usar este
 void FlightNetworkManager::bestFlightsCityToCity(std::string sourceCountry, std::string sourceCity, std::string targetCountry, std::string targetCity, vector<std::string> airlinesAllowed) {
     bool sourceCityFound = false;
