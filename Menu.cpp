@@ -178,15 +178,28 @@ void Menu::processChoice2(int choice) {
                 break;
         }
         case 4: {
-            cout << "Enter the Airport Code: ";
-            cin >> airportCode;
-            manager.DisplayAirportDestinationCountries(airportCode);
-            manager.DisplayAirlinesOperatingFromAirport(airportCode);
-            cout << endl;
-            string city;
-            cout << "Enter the city name: ";
-            cin >> city;
-            manager.DisplayCityDestinationCountries(city);
+            int subOption;
+            cout << "Select an option:\n";
+            cout << "1. Display Airport Information\n";
+            cout << "2. Display City Information\n";
+            cout << "Enter your choice (1-2): ";
+            cin >> subOption;
+
+            if (subOption == 1) {
+                cout << "Enter the Airport Code: ";
+                cin >> airportCode;
+                manager.DisplayAirportDestinationCountries(airportCode);
+                manager.DisplayAirlinesOperatingFromAirport(airportCode);
+            } else if (subOption == 2) {
+                string city;
+                cout << "Enter the city name: ";
+                cin.ignore(); // To clear the newline character left in the buffer
+                getline(cin, city);
+                manager.DisplayCityDestinationCountries(city);
+            } else {
+                cout << "Invalid option. Please try again.\n";
+            }
+
             displayMenu2();
             break;
         }
@@ -330,7 +343,7 @@ void Menu::processChoice3(int choice) {
             displayMenu3();
             break;
         }
-        case 2: { //MUDADO
+        case 2: {
             string line;
             getline(cin, line);
             cout << "Enter source airport name: ";
