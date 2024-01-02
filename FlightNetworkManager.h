@@ -55,7 +55,7 @@ public:
     std::string getAirportCodeByName(const std::string& airportName);
     std::vector<std::vector<Flight*>> findBestFlightsBetweenCities(const std::string& sourceCity, const std::string& targetCity);
     std::vector<std::string> getAirportsInCity(const std::string& cityName);
-    void findFlightRoutesAirportToAirportnoprint(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines);
+    void bestFlightAirportToAirportnoprint(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines);
 
 
 
@@ -97,18 +97,17 @@ public:
 
     std::vector<Airport> findNearestAirports(double lat, double longi, int maxResults);
     vector<vector<vector<Flight *>>> findBestFlightOptions(double srcLat, double srcLong, double destLat, double destLong);
-    void findFlightRoutesCityToCity(std::string sourceCountry, std::string sourceCity, std::string targetCountry,
+    void bestFlightsCityToCity(std::string sourceCountry, std::string sourceCity, std::string targetCountry,
                                                           std::string targetCity, vector<std::string> airlinesAllowed);
-    void findFlightRoutesAirportToAirport(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines);
+    void bestFlightAirportToAirport(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines);
 
-    double ScaleDistance(const vector<Flight*> &v);
-    double distanciaAeroportos(const string& src, const string& dest);
-    bool isConnected(int a, int b);
+    double computeDistance(const vector<Flight*> &v);
+    double airportregDistance(const string& src, const string& dest);
+    bool isConnected(int i, int k);
     void findFlightRoutesCoordinates(double sourceLongitude, double sourceLatitude, double targetLongitude,
                                                            double targetLatitude, double radius, vector<std::string> airlinesAllowed);
-    bool distanciaAeroportoCoordinates(Airport *airport, const double &longitude, const double &latitude, double x);
+    bool airportCordDistance(Airport *airport, const double &longi, const double &lat, double x);
 
     };
-
 
 #endif //PROJ2_FLIGHTNETWORKMANAGER_H

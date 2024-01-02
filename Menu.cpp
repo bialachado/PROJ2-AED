@@ -319,7 +319,7 @@ void Menu::processChoice3(int choice) {
                     }
                 }
             }
-            manager.findFlightRoutesAirportToAirport(source, target, airlines);
+            manager.bestFlightAirportToAirport(source, target, airlines);
             displayMenu3();
             break;
         }
@@ -359,7 +359,7 @@ void Menu::processChoice3(int choice) {
                     }
                 }
             }
-            manager.findFlightRoutesCityToCity(sourcecountry, sourcecity, targetcountry, targetcity, airlines);
+            manager.bestFlightsCityToCity(sourcecountry, sourcecity, targetcountry, targetcity, airlines);
             displayMenu3();
             break;
         }

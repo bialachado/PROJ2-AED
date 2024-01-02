@@ -758,25 +758,25 @@ FlightNetworkManager::findBestFlightOptions(double srcLat, double srcLong, doubl
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*/
 
 //substituto -- usar este para codigo do aeroporto
-void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines) {
-    auto search = node_keys.find(sourceAirportCode);
-    if (search == node_keys.end()) {
+void FlightNetworkManager::bestFlightAirportToAirport(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines) {
+    auto looksource = node_keys.find(sourceAirportCode);
+    if (looksource == node_keys.end()) {
         std::cerr << "Error: Source airport code '" << sourceAirportCode << "' not found." << std::endl;
         return;
     }
-    auto search2 = node_keys.find(targetAirportCode);
-    if (search2 == node_keys.end()) {
+    auto looktarget = node_keys.find(targetAirportCode);
+    if (looktarget == node_keys.end()) {
         std::cerr << "Error: Target airport code '" << targetAirportCode << "' not found." << std::endl;
         return;
     }
-    int con1 = (*search).second;
-    int con2 = (*search2).second;
+    int con1 = (*looksource).second;
+    int con2 = (*looktarget).second;
     if (!isConnected(con1, con2)) {
         cout << "It is not possible to make this flight\n";
         return;
     }
-    list<Flight*> found = flightsGraph.bfsGetList((*search).second, sourceAirportCode, targetAirportCode);
-    list<Flight*> copy = found;
+    list<Flight*> found = flightsGraph.bfsGetList((*looksource).second, sourceAirportCode, targetAirportCode);
+    list<Flight*> foundDupe = found;
     auto it = found.begin();
     while (it != found.end()) {
         if ((*it)->getTarget() != targetAirportCode || (*it)->getSource() != sourceAirportCode) {
@@ -787,37 +787,37 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
     if (found.empty()) {
         list<vector<Flight*>> scales;
         cout << "\nFlight with stopovers:\n";
-        auto found2 = copy;
-        for (Flight* f : copy) {
+        auto found2 = foundDupe;
+        for (Flight* voo : foundDupe) {
             auto it2 = found2.begin();
             while (it2!=found2.end()) {
                 if ((*it2)->getTarget() != targetAirportCode) it2 = found2.erase(it2);
                 else it2++;
             }
 
-            for (Flight* f2 : found2) {
+            for (Flight* voo2 : found2) {
                 vector<Flight*> v;
-                if (f->getTarget()!=f2->getSource() || f->getAirline()!=f2->getAirline()) continue;
-                v.push_back(f);
-                v.push_back(f2);
+                if (voo->getTarget()!=voo2->getSource() || voo->getAirline()!=voo2->getAirline()) continue;
+                v.push_back(voo);
+                v.push_back(voo2);
                 scales.push_back(v);
             }
         }
         if (!airlines.empty()) {
             for (const auto& v : scales) {
-                int count = 0;
+                int counter = 0;
                 for (auto f : v) {
-                    for (const auto& a : airlines) {
-                        if (a == f->getAirline()) {
-                            count++;
+                    for (const auto& airl : airlines) {
+                        if (airl == f->getAirline()) {
+                            counter++;
                         }
                     }
-                    if (count == v.size()) {
-                        vector<Flight*> copy = v;
-                        for (auto f : copy) {
+                    if (counter == v.size()) {
+                        vector<Flight*> flightcopy = v;
+                        for (auto f : flightcopy) {
                             cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << "\n";
                         }
-                        cout << " Total distance = " << ScaleDistance(v) << " km\n\n";
+                        cout << " Total distance = " << computeDistance(v) << " km\n\n";
                     }
                 }
             }
@@ -827,7 +827,7 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
             for (auto f : v) {
                 cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << "\n";
             }
-            cout << "Total distance = " << ScaleDistance(v) << " km\n\n";
+            cout << "Total distance = " << computeDistance(v) << " km\n\n";
         }
     } else {
         cout << "\nDirect flights:\n";
@@ -837,7 +837,7 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
                     for (const auto& a : airlines) {
                         if (a == f->getAirline() ) {
                             cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << endl;
-                            cout << "Distance = " << distanciaAeroportos(f->getSource(), f->getTarget()) << " km\n";
+                            cout << "Distance = " << airportregDistance(f->getSource(), f->getTarget()) << " km\n";
                         }
                     }
                 }
@@ -846,7 +846,7 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
             for (Flight* f : found) {
                 if (f->getSource() == sourceAirportCode) {
                     cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << endl;
-                    cout <<  "Distance = " << distanciaAeroportos(f->getSource(), f->getTarget()) << " km\n";
+                    cout <<  "Distance = " << airportregDistance(f->getSource(), f->getTarget()) << " km\n";
                 }
             }
         }
@@ -854,25 +854,25 @@ void FlightNetworkManager::findFlightRoutesAirportToAirport(const std::string& s
 }
 
 
-void FlightNetworkManager::findFlightRoutesAirportToAirportnoprint(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines) {
-    auto search = node_keys.find(sourceAirportCode);
-    auto search2 = node_keys.find(targetAirportCode);
-    if (search == node_keys.end()) {
+void FlightNetworkManager::bestFlightAirportToAirportnoprint(const std::string& sourceAirportCode, const std::string& targetAirportCode, const std::vector<std::string>& airlines) {
+    auto looksource = node_keys.find(sourceAirportCode);
+    if (looksource == node_keys.end()) {
         std::cerr << "Error: Source airport code '" << sourceAirportCode << "' not found." << std::endl;
         return;
     }
-    if (search2 == node_keys.end()) {
+    auto looktarget = node_keys.find(targetAirportCode);
+    if (looktarget == node_keys.end()) {
         std::cerr << "Error: Target airport code '" << targetAirportCode << "' not found." << std::endl;
         return;
     }
-    int con1 = (*search).second;
-    int con2 = (*search2).second;
+    int con1 = (*looksource).second;
+    int con2 = (*looktarget).second;
     if (!isConnected(con1, con2)) {
         cout << "It is not possible to make this flight\n";
         return;
     }
-    list<Flight*> found = flightsGraph.bfsGetList((*search).second, sourceAirportCode, targetAirportCode);
-    list<Flight*> copy = found;
+    list<Flight*> found = flightsGraph.bfsGetList((*looksource).second, sourceAirportCode, targetAirportCode);
+    list<Flight*> foundDupe = found;
     auto it = found.begin();
     while (it != found.end()) {
         if ((*it)->getTarget() != targetAirportCode || (*it)->getSource() != sourceAirportCode) {
@@ -882,37 +882,37 @@ void FlightNetworkManager::findFlightRoutesAirportToAirportnoprint(const std::st
 
     if (found.empty()) {
         list<vector<Flight*>> scales;
-        auto found2 = copy;
-        for (Flight* f : copy) {
+        auto found2 = foundDupe;
+        for (Flight* voo : foundDupe) {
             auto it2 = found2.begin();
             while (it2!=found2.end()) {
                 if ((*it2)->getTarget() != targetAirportCode) it2 = found2.erase(it2);
                 else it2++;
             }
 
-            for (Flight* f2 : found2) {
+            for (Flight* voo2 : found2) {
                 vector<Flight*> v;
-                if (f->getTarget()!=f2->getSource() || f->getAirline()!=f2->getAirline()) continue;
-                v.push_back(f);
-                v.push_back(f2);
+                if (voo->getTarget()!=voo2->getSource() || voo->getAirline()!=voo2->getAirline()) continue;
+                v.push_back(voo);
+                v.push_back(voo2);
                 scales.push_back(v);
             }
         }
         if (!airlines.empty()) {
             for (const auto& v : scales) {
-                int count = 0;
+                int counter = 0;
                 for (auto f : v) {
-                    for (const auto& a : airlines) {
-                        if (a == f->getAirline()) {
-                            count++;
+                    for (const auto& airl : airlines) {
+                        if (airl == f->getAirline()) {
+                            counter++;
                         }
                     }
-                    if (count == v.size()) {
-                        vector<Flight*> copy = v;
-                        for (auto f : copy) {
+                    if (counter == v.size()) {
+                        vector<Flight*> flightcopy = v;
+                        for (auto f : flightcopy) {
                             cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << "\n";
                         }
-                        cout << " Total distance = " << ScaleDistance(v) << " km\n\n";
+                        cout << " Total distance = " << computeDistance(v) << " km\n\n";
                     }
                 }
             }
@@ -922,7 +922,7 @@ void FlightNetworkManager::findFlightRoutesAirportToAirportnoprint(const std::st
             for (auto f : v) {
                 cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << "\n";
             }
-            cout << "Total distance = " << ScaleDistance(v) << " km\n\n";
+            cout << "Total distance = " << computeDistance(v) << " km\n\n";
         }
     } else {
         cout << "\nDirect flights:\n";
@@ -932,7 +932,7 @@ void FlightNetworkManager::findFlightRoutesAirportToAirportnoprint(const std::st
                     for (const auto& a : airlines) {
                         if (a == f->getAirline() ) {
                             cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << endl;
-                            cout << "Distance = " << distanciaAeroportos(f->getSource(), f->getTarget()) << " km\n";
+                            cout << "Distance = " << airportregDistance(f->getSource(), f->getTarget()) << " km\n";
                         }
                     }
                 }
@@ -941,7 +941,7 @@ void FlightNetworkManager::findFlightRoutesAirportToAirportnoprint(const std::st
             for (Flight* f : found) {
                 if (f->getSource() == sourceAirportCode) {
                     cout << f->getSource() << " -> " << f->getTarget() << " || " << "Airline: " << f->getAirline() << endl;
-                    cout <<  "Distance = " << distanciaAeroportos(f->getSource(), f->getTarget()) << " km\n";
+                    cout <<  "Distance = " << airportregDistance(f->getSource(), f->getTarget()) << " km\n";
                 }
             }
         }
@@ -949,23 +949,23 @@ void FlightNetworkManager::findFlightRoutesAirportToAirportnoprint(const std::st
 }
 
 //substituto para pesquisa cidade -- Usar este
-void FlightNetworkManager::findFlightRoutesCityToCity(std::string sourceCountry, std::string sourceCity, std::string targetCountry, std::string targetCity, vector<std::string> airlinesAllowed) {
-    vector<Airport*> airportsInSourceCity;
-    vector<Airport*> airportsInTargetCity;
-
+void FlightNetworkManager::bestFlightsCityToCity(std::string sourceCountry, std::string sourceCity, std::string targetCountry, std::string targetCity, vector<std::string> airlinesAllowed) {
     bool sourceCityFound = false;
     bool targetCityFound = false;
 
-    for (auto x : airportsVec) {
-        if (x->getCountry() == sourceCountry && x->getCity() == sourceCity) {
-            airportsInSourceCity.push_back(x);
+    vector<Airport*> targetAirports;
+    vector<Airport*> originAirports;
+
+    for (auto airp : airportsVec) {
+        if (airp->getCountry() == sourceCountry && airp->getCity() == sourceCity) {
+            originAirports.push_back(airp);
             sourceCityFound = true;
         }
     }
 
-    for (auto x : airportsVec) {
-        if (x->getCountry() == targetCountry && x->getCity() == targetCity) {
-            airportsInTargetCity.push_back(x);
+    for (auto airp : airportsVec) {
+        if (airp->getCountry() == targetCountry && airp->getCity() == targetCity) {
+            targetAirports.push_back(airp);
             targetCityFound = true;
         }
     }
@@ -985,14 +985,14 @@ void FlightNetworkManager::findFlightRoutesCityToCity(std::string sourceCountry,
         return;
     }
 
-    if (airportsInSourceCity.empty() || airportsInTargetCity.empty()) {
+    if (originAirports.empty() || targetAirports.empty()) {
         std::cerr << "Error: No airports found in one or both of the specified countries/cities." << std::endl;
         return;
     }
 
-    for (auto x : airportsInSourceCity) {
-        for (auto z : airportsInTargetCity) {
-            findFlightRoutesAirportToAirportnoprint(x->getCode(), z->getCode(), airlinesAllowed);
+    for (auto airp : originAirports) {
+        for (auto airp2 : targetAirports) {
+            bestFlightAirportToAirportnoprint(airp->getCode(), airp2->getCode(), airlinesAllowed);
         }
     }
 }
@@ -1000,26 +1000,22 @@ void FlightNetworkManager::findFlightRoutesCityToCity(std::string sourceCountry,
 
 
 
-double FlightNetworkManager::distanciaAeroportos(const string& src, const string& dest) {
+double FlightNetworkManager::airportregDistance(const string& src, const string& dest) {
+    double lat1 = airportMap.find(src)->second->getLat();
+    double lat2 = airportMap.find(dest)->second->getLat();
+    double long1 = airportMap.find(src)->second->getLong();
+    double long2 = airportMap.find(dest)->second->getLong();
 
-    double lat1, lat2, lon1, lon2;
-    lat1 = airportMap.find(src)->second->getLat();
-    lat2 = airportMap.find(dest)->second->getLat();
-    lon1 = airportMap.find(src)->second->getLong();
-    lon2 = airportMap.find(dest)->second->getLong();
-
-    double dLat = (lat2 - lat1) *
-                  M_PI / 180.0;
-    double dLon = (lon2 - lon1) *
-                  M_PI / 180.0;
+    double distLat = (lat2 - lat1) * M_PI / 180.0;
+    double distLong = (long2 - long1) * M_PI / 180.0;
 
     // convert to radians
     lat1 = (lat1) * M_PI / 180.0;
     lat2 = (lat2) * M_PI / 180.0;
 
     // apply formula
-    double a = pow(sin(dLat / 2), 2) +
-               pow(sin(dLon / 2), 2) *
+    double a = pow(sin(distLat / 2), 2) +
+               pow(sin(distLong / 2), 2) *
                cos(lat1) * cos(lat2);
     double rad = 6371;
     double c = 2 * asin(sqrt(a));
@@ -1028,69 +1024,68 @@ double FlightNetworkManager::distanciaAeroportos(const string& src, const string
 
 
 
-double FlightNetworkManager::ScaleDistance(const vector<Flight*> &v) {
-    double ans = 0;
+double FlightNetworkManager::computeDistance(const vector<Flight*> &v) {
+    double res = 0;
     for (auto i : v) {
-        ans += distanciaAeroportos(i->getSource(), i->getTarget());
+        res += airportregDistance(i->getSource(), i->getTarget());
     }
-    return ans;
+    return res;
 }
 
-bool FlightNetworkManager::isConnected(int a, int b) {
-    return flightsGraph.isConnected(a, b);
+bool FlightNetworkManager::isConnected(int i, int k) {
+    return flightsGraph.isConnected(i, k);
 }
 
 //usar este para coordenadas
 void FlightNetworkManager::findFlightRoutesCoordinates(double sourceLongitude, double sourceLatitude, double targetLongitude, double targetLatitude, double radius, vector<std::string> airlinesAllowed) {
-    vector<Airport*> airportsInSource;
-    vector<Airport*> airportsInTarget;
+    bool sourceAirCoordsFound = false;
+    bool targetAirCoordsFound = false;
+    vector<Airport*> originAirports;
+    vector<Airport*> targetAirports;
 
-    bool sourceCoordsFound = false;
-    bool targetCoordsFound = false;
 
-    for (auto x : airportsVec) {
-        if (distanciaAeroportoCoordinates(x, sourceLongitude, sourceLatitude, radius)) {
-            airportsInSource.push_back(x);
-            sourceCoordsFound = true;
+    for (auto airp : airportsVec) {
+        if (airportCordDistance(airp, sourceLongitude, sourceLatitude, radius)) {
+            originAirports.push_back(airp);
+            sourceAirCoordsFound = true;
         }
-        if (distanciaAeroportoCoordinates(x, targetLongitude, targetLatitude, radius)) {
-            airportsInTarget.push_back(x);
-            targetCoordsFound = true;
+        if (airportCordDistance(airp, targetLongitude, targetLatitude, radius)) {
+            targetAirports.push_back(airp);
+            targetAirCoordsFound = true;
         }
     }
 
-    if (!sourceCoordsFound) {
+    if (!sourceAirCoordsFound) {
         std::cerr << "Error: No airports found near the specified source coordinates." << std::endl;
         return;
     }
 
-    if (!targetCoordsFound) {
+    if (!targetAirCoordsFound) {
         std::cerr << "Error: No airports found near the specified target coordinates." << std::endl;
         return;
     }
 
-    for (auto y : airportsInSource) {
-        for (auto z : airportsInTarget) {
-            findFlightRoutesAirportToAirportnoprint(y->getCode(), z->getCode(), airlinesAllowed);
+    for (auto y : originAirports) {
+        for (auto z : targetAirports) {
+            bestFlightAirportToAirportnoprint(y->getCode(), z->getCode(), airlinesAllowed);
         }
     }
 }
 
 
-bool FlightNetworkManager::distanciaAeroportoCoordinates(Airport *airport, const double &longitude, const double &latitude, double x) {
-    double lat1 = airport->getLat();
-    double lon1 = airport->getLong();
-
-    double dLat = (latitude - lat1) * M_PI / 180.0;
-    double dLon = (longitude - lon1) * M_PI / 180.0;
-
-    lat1 = (lat1) * M_PI / 180.0;
-    double lat2 = (latitude) * M_PI /180.0;
-
-    double a = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
+bool FlightNetworkManager::airportCordDistance(Airport *airport, const double &longi, const double &lat, double x) {
+    double dLat = (lat - airport->getLat()) * M_PI / 180.0;
+    double dLon = (longi - airport->getLong()) * M_PI / 180.0;
+    double latitude1 = (airport->getLat()) * M_PI / 180.0;
+    double lat2 = (lat) * M_PI /180.0;
+    double a = (pow(sin(dLat / 2), 2)) + (pow(sin(dLon / 2), 2)) * (cos(latitude1)) * (cos(lat2));
     double rad = 6371;
     double c = 2 * asin(sqrt(a));
-    double ans = rad * c;
-    if (ans <= x) return true;
+    double res = rad * c;
+
+    if (x>=res){
+        return true;
+    }
+
     return false;
 }
